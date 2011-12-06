@@ -1,0 +1,179 @@
+#!/usr/bin/env ruby
+# flashcache_stats - A munin plugin to monitor various FlashCache device statistics.
+#
+# Author:
+#   Pål-Kristian Hamre <pkhamre@gmail.com>
+#   http://blog.pkhamre.com/
+#
+# Based on:
+#  thin_peak_memory by - Frederico de Souza Araujo - fred.the.master@gmail.com
+#   A munin plugin for Linux to monitor the maximum memory size
+#   that an each individual thin process has reached
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2
+# as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+#%# family=auto
+#%# capabilities=autoconf
+
+module Munin
+  class FlashCacheStats
+    def initialize
+      @config = {
+        :io => {
+          :title    => 'FlashCache I/O',
+          :category => 'flashcache',
+          :vlabel   => 'flashcache',
+          :values   => {
+            'reads' => {
+              :type  => 'DERIVE',
+              :draw  => 'LINE1',
+              :min   => 0,
+              :info  => 'FlashCache reads',
+              :label => 'reads'
+            },
+            'writes' => {
+              :type  => 'DERIVE',
+              :draw  => 'LINE1',
+              :min   => 0,
+              :info  => 'FlashCache writes',
+              :label => 'writes'
+            }
+          }
+        },
+        :hits => {
+          :title    => 'FlashCache hits',
+          :category => 'flashcache',
+          :vlabel   => 'flashcache_hits',
+          :values   => {
+            'rhits' => {
+              :type  => 'DERIVE',
+              :draw  => 'LINE1',
+              :min   => 0,
+              :info  => 'FlashCache read hits',
+              :label => 'read_hits'
+            },
+            'whits' => {
+              :type  => 'DERIVE',
+              :draw  => 'LINE1',
+              :min   => 0,
+              :info  => 'FlashCache write hits',
+              :label => 'write_hits'
+            },
+            'dwhits' => {
+              :type  => 'DERIVE',
+              :draw  => 'LINE1',
+              :min   => 0,
+              :info  => 'FlashCache dirty write hits',
+              :label => 'dirty_write_hits'
+            }
+          }
+        },
+        :hitspercent => {
+          :title    => 'FlashCache hit in percent',
+          :category => 'flashcache',
+          :vlabel   => 'flashcache_hit_in_percent',
+          :values   => {
+            'rhitp' => {
+              :draw  => 'LINE1',
+              :min   => 0,
+              :info  => 'FlashCache read hits in percent',
+              :label => 'read_hit_percent'
+            },
+            'whitp' => {
+              :draw  => 'LINE1',
+              :min   => 0,
+              :info  => 'FlashCache write hits in percent',
+              :label => 'write_hit_percent'
+            },
+            'dwhitp' => {
+              :draw  => 'LINE1',
+              :min   => 0,
+              :info  => 'FlashCache dirty write hits in percent',
+              :label => 'dirty_write_hit_percent'
+            }
+          }
+        }
+      }
+    end
+
+    def config
+      @config.each do |graphname, data|
+        puts "multigraph flashcache_#{graphname.to_s}"
+        puts "graph_title #{graphname.to_s}"
+
+        graphs = Array.new
+
+        data[:values].each do |graph, val|
+          graphs << graph.to_s
+        end
+
+        graph_order = graphs.join " "
+        puts "graph_order #{graph_order}"
+        puts "graph_args --base 1024"
+        puts "graph_vlabel flashcache"
+        puts "graph_category flashcache"
+        puts "graph_info flashcache"
+        puts
+
+        data[:values].each do |graph, val|
+          puts "#{graph.to_s}.type #{val[:type]}" if val[:type]
+          puts "#{graph.to_s}.draw #{val[:draw]}"
+          puts "#{graph.to_s}.min #{val[:min]}"
+          puts "#{graph.to_s}.info #{val[:info]}"
+          puts "#{graph.to_s}.label #{val[:label]}"
+        end
+
+        puts
+      end
+    end
+
+    def autoconf
+      check = `/sbin/dmsetup status cachedev`
+      if $?.to_i.eql? 0
+        puts "yes"
+      else
+        puts "no"
+      end
+    end
+
+    def run
+      @result = `sudo /sbin/dmsetup status cachedev`
+      @result.gsub!(/.*flashcache.*/, '').gsub!(/\n/, ' ').gsub!(/\t/, '').gsub!(/^\s*/, '').gsub!(/\,/, '').gsub!(/\)\s*/, ')').gsub!(/\ /, '_').gsub!(/\)/, ') ')
+
+      @config.each do |cgraphname, data|
+        puts "multigraph flashcache_#{cgraphname}"
+
+        data[:values].each do |graph, val|
+          @result.split.each do |item|
+            if item =~ /(\w*)\((\d*)\)/
+              graph_item, value_item = $1, $2
+              puts "#{graph}.value #{value_item}" if graph_item == val[:label]
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
+fcs = Munin::FlashCacheStats.new
+
+case ARGV[0]
+when "config"
+  fcs.config
+when "autoconf"
+  fcs.autoconf
+else
+  fcs.run
+end
