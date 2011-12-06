@@ -33,21 +33,20 @@ module Munin
         :io => {
           :title    => 'FlashCache I/O',
           :category => 'flashcache',
-          :vlabel   => 'flashcache',
+          :vlabel   => 'Bytes/${graph_period} read (-) / write (+)',
           :values   => {
             'reads' => {
-              :type  => 'DERIVE',
+              :type  => 'GAUGE',
               :draw  => 'LINE1',
               :min   => 0,
-              :info  => 'FlashCache reads',
-              :label => 'reads'
+              :label => 'Read bytes'
             },
             'writes' => {
-              :type  => 'DERIVE',
-              :draw  => 'LINE1',
-              :min   => 0,
-              :info  => 'FlashCache writes',
-              :label => 'writes'
+              :type     => 'GAUGE',
+              :draw     => 'LINE1',
+              :min      => 0,
+              :negative => 'reads',
+              :label    => 'Write bytes'
             }
           }
         },
@@ -127,11 +126,12 @@ module Munin
         puts
 
         data[:values].each do |graph, val|
-          puts "#{graph.to_s}.type #{val[:type]}" if val[:type]
-          puts "#{graph.to_s}.draw #{val[:draw]}"
-          puts "#{graph.to_s}.min #{val[:min]}"
-          puts "#{graph.to_s}.info #{val[:info]}"
-          puts "#{graph.to_s}.label #{val[:label]}"
+          puts "#{graph.to_s}.type #{val[:type]}"      if val[:type]
+          puts "#{graph.to_s}.draw #{val[:draw]}"      if val[:draw]
+          puts "#{graph.to_s}.min #{val[:min]}"        if val[:min]
+          puts "#{graph.to_s}.info #{val[:info]}"      if val[:info]
+          puts "#{graph.to_s}.label #{val[:label]}"    if val[:label]
+          puts "#{graph.to_s}.label #{val[:negative]}" if val[:negative]
         end
 
         puts
