@@ -34,12 +34,12 @@ module Munin
             'reads' => {
               :graph => 'no',
               :info  => 'FlashCache reads',
-              :label => 'Read bytes'
+              :label => 'Number of reads'
             },
             'writes' => {
               :negative => 'reads',
               :info     => 'FlashCache writes',
-              :label    => 'Write bytes'
+              :label    => 'Number of writes'
             }
           }
         },
@@ -50,16 +50,16 @@ module Munin
             'read_hits' => {
               :graph => 'no',
               :info  => 'FlashCache read hits',
-              :label => 'read_hits'
+              :label => 'Read hits'
             },
             'write_hits' => {
               :negative => 'read_hits',
               :info     => 'FlashCache write hits',
-              :label    => 'write_hits'
+              :label    => 'Write hits'
             },
             'dirty_write_hits' => {
               :info  => 'FlashCache dirty write hits',
-              :label => 'dirty_write_hits'
+              :label => 'Dirty write hits'
             }
           }
         },
@@ -69,15 +69,15 @@ module Munin
           :values   => {
             'read_hit_percent' => {
               :info  => 'FlashCache read hits in percent',
-              :label => 'read_hit_percent'
+              :label => 'Read hit in percent'
             },
             'write_hit_percent' => {
               :info  => 'FlashCache write hits in percent',
-              :label => 'write_hit_percent'
+              :label => 'Write hit in percent'
             },
             'dirty_write_hit_percent' => {
               :info  => 'FlashCache dirty write hits in percent',
-              :label => 'dirty_write_hit_percent'
+              :label => 'Dirty write hit in percent'
             }
           }
         }
