@@ -108,12 +108,12 @@ module Munin
         puts
 
         data[:values].each_pair do |graph, val|
-          if val.has_key? :draw     then puts "#{graph.to_s}.draw #{val[:draw]}" else puts "#{graph.to_s}.draw LINE1" end
-          if val.has_key? :type     then puts "#{graph.to_s}.type #{val[:type]}" else puts "#{graph.to_s}.type DERIVE" end
-          if val.has_key? :min      then puts "#{graph.to_s}.min #{val[:min]}"   else puts "#{graph.to_s}.min 0" end
-          if val.has_key? :graph    then puts "#{graph.to_s}.graph #{val[:graph]}" end
-          if val.has_key? :info     then puts "#{graph.to_s}.info #{val[:info]}" end
           if val.has_key? :label    then puts "#{graph.to_s}.label #{val[:label]}" end
+          if val.has_key? :type     then puts "#{graph.to_s}.type #{val[:type]}" else puts "#{graph.to_s}.type DERIVE" end
+          if val.has_key? :graph    then puts "#{graph.to_s}.graph #{val[:graph]}" end
+          if val.has_key? :min      then puts "#{graph.to_s}.min #{val[:min]}"   else puts "#{graph.to_s}.min 0" end
+          if val.has_key? :draw     then puts "#{graph.to_s}.draw #{val[:draw]}" else puts "#{graph.to_s}.draw LINE1" end
+          if val.has_key? :info     then puts "#{graph.to_s}.info #{val[:info]}" end
           if val.has_key? :negative then puts "#{graph.to_s}.negative #{val[:negative]}" end
         end
 
