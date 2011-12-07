@@ -130,7 +130,7 @@ module Munin
         data[:values].each do |graph, val|
           content.split.each do |item|
             name, value = item.split '='
-            puts "#{graph}.value #{value}" if name == val[:label]
+            puts "#{graph}.value #{value}" if name == graph
           end
         end
       end
