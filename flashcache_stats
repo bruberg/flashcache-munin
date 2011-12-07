@@ -48,12 +48,14 @@ module Munin
           :vlabel => 'flashcache_hits',
           :values => {
             'read_hits' => {
+              :graph => 'no',
               :info  => 'FlashCache read hits',
               :label => 'read_hits'
             },
             'write_hits' => {
-              :info  => 'FlashCache write hits',
-              :label => 'write_hits'
+              :negative => 'read_hits',
+              :info     => 'FlashCache write hits',
+              :label    => 'write_hits'
             },
             'dirty_write_hits' => {
               :info  => 'FlashCache dirty write hits',
