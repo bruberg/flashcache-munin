@@ -127,7 +127,7 @@ module Munin
       content.gsub!(/\n/, '')
 
       @config.each do |cgraphname, data|
-        puts "multigraph flashcache_#{cgraphname}"
+        puts "multigraph FlashCache#{graphname.to_s.capitalize}"
 
         data[:values].each do |graph, val|
           content.split.each do |item|
