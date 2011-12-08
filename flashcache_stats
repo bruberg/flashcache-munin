@@ -66,17 +66,21 @@ module Munin
         :hitspercent => {
           :title    => 'FlashCache hit in percent',
           :vlabel   => 'flashcache_hit_in_percent',
+          :args     => '--base 1000 --lower-limit 0 --upper-limit 100',
           :values   => {
             'read_hit_percent' => {
               :info  => 'FlashCache read hits in percent',
+              :type  => 'GAUGE',
               :label => 'Read hit in percent'
             },
             'write_hit_percent' => {
               :info  => 'FlashCache write hits in percent',
+              :type  => 'GAUGE',
               :label => 'Write hit in percent'
             },
             'dirty_write_hit_percent' => {
               :info  => 'FlashCache dirty write hits in percent',
+              :type  => 'GAUGE',
               :label => 'Dirty write hit in percent'
             }
           }
@@ -103,7 +107,7 @@ module Munin
         if data.has_key? :title    then puts "graph_title #{data[:title]}" end
         if data.has_key? :vlabel   then puts "graph_vlabel #{data[:vlabel]}" end
         if data.has_key? :category then puts "graph_category #{data[:category]}" else puts "graph_category flashcache" end
-        if data.has_key? :base     then puts "graph_args --base #{data[:base]}"  else puts "graph_args --base 1000 --lower-limit 0" end
+        if data.has_key? :args     then puts "graph_args #{data[:args]}"  else puts "graph_args --base 1000 --lower-limit 0" end
         if data.has_key? :scale    then puts "graph_scale #{data[:scale]}"       else puts "graph_scale no" end
         puts
 
@@ -127,7 +131,7 @@ module Munin
       content.gsub!(/\n/, '')
 
       @config.each do |cgraphname, data|
-        puts "multigraph FlashCache#{graphname.to_s.capitalize}"
+        puts "multigraph FlashCache#{cgraphname.to_s.capitalize}"
 
         data[:values].each do |graph, val|
           content.split.each do |item|
