@@ -28,7 +28,7 @@ module Munin
 
       @config = {
         :io => {
-          :title  => 'Reads/${graph_period} (-) / Writes/${graph_period} (+)',
+          :title  => 'Reads / Writes',
           :vlabel => 'per second',
           :values => {
             'reads' => {
