@@ -29,7 +29,7 @@ module Munin
       @config = {
         :io => {
           :title  => 'Reads / Writes',
-          :vlabel => 'per second',
+          :vlabel => 'Reads (-) / writes (+) per second',
           :values => {
             'reads' => {
               :graph => 'no',
@@ -45,7 +45,7 @@ module Munin
         },
         :hits => {
           :title  => 'FlashCache hits',
-          :vlabel => 'flashcache_hits',
+          :vlabel => 'Read (-) / write (+) hits per second',
           :values => {
             'read_hits' => {
               :graph => 'no',
@@ -64,24 +64,24 @@ module Munin
           }
         },
         :hitspercent => {
-          :title    => 'FlashCache hit in percent',
-          :vlabel   => 'flashcache_hit_in_percent',
+          :title    => 'FlashCache hits in percent',
+          :vlabel   => 'Percent',
           :args     => '--base 1000 --lower-limit 0 --upper-limit 100',
           :values   => {
             'read_hit_percent' => {
               :info  => 'FlashCache read hits in percent',
               :type  => 'GAUGE',
-              :label => 'Read hit in percent'
+              :label => 'Read hits'
             },
             'write_hit_percent' => {
               :info  => 'FlashCache write hits in percent',
               :type  => 'GAUGE',
-              :label => 'Write hit in percent'
+              :label => 'Write hits'
             },
             'dirty_write_hit_percent' => {
               :info  => 'FlashCache dirty write hits in percent',
               :type  => 'GAUGE',
-              :label => 'Dirty write hit in percent'
+              :label => 'Dirty write hits'
             }
           }
         }
@@ -154,3 +154,4 @@ when 'autoconf'
 else
   flashcache_stats.run
 end
+
